@@ -1,7 +1,7 @@
 class Rtbt < Formula
   desc "Blazing-fast, memory-efficient CLI tool for converting images to themed color palettes"
   homepage "https://github.com/emgeedata/rustbucket"
-  url "https://github.com/emgeedata/rustbucket/archive/v1.0.0.tar.gz"
+  url "https://github.com/emgeedata/rustbucket/archive/v1.0.1.tar.gz"
   sha256 "PLACEHOLDER_SHA256"
   license "MIT"
 
