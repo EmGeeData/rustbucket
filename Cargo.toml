@@ -1,0 +1,44 @@
+[package]
+name = "rustbucket"
+version = "1.0.0"
+edition = "2021"
+authors = ["EmGeeData"]
+description = "Blazing-fast, memory-efficient CLI tool for converting images to themed color palettes"
+license = "MIT"
+repository = "https://github.com/emgeedata/rustbucket"
+homepage = "https://github.com/emgeedata/rustbucket"
+documentation = "https://github.com/emgeedata/rustbucket#readme"
+readme = "README.md"
+keywords = ["image", "colors", "palette", "nord", "cli"]
+categories = ["multimedia::images", "command-line-utilities"]
+rust-version = "1.70.0"
+
+[[bin]]
+name = "rtbt"
+path = "src/main.rs"
+
+[[bin]]
+name = "generate-completions"
+path = "scripts/generate-completions.rs"
+
+[dependencies]
+clap = { version = "4.0", features = ["derive"] }
+clap_complete = "4.0"
+image = { version = "0.24", default-features = false, features = ["png", "jpeg"] }
+serde = { version = "1.0", features = ["derive"] }
+toml = "0.8"
+anyhow = "1.0"
+thiserror = "1.0"
+log = "0.4"
+env_logger = "0.10"
+
+[dev-dependencies]
+criterion = "0.5"
+tempfile = "3.0"
+assert_cmd = "2.0"
+predicates = "3.0"
+
+[profile.release]
+lto = true
+codegen-units = 1
+panic = "abort"

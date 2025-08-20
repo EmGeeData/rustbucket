@@ -1,0 +1,114 @@
+#compdef rtbt
+
+autoload -U is-at-least
+
+_rtbt() {
+    typeset -A opt_args
+    typeset -a _arguments_options
+    local ret=1
+
+    if is-at-least 5.2; then
+        _arguments_options=(-s -S -C)
+    else
+        _arguments_options=(-s -C)
+    fi
+
+    # Built-in palette names
+    local -a palettes
+    palettes=(
+        'nord:Arctic, north-bluish clean palette'
+        'dracula:Dark theme with vibrant accent colors'
+        'gruvbox:Retro groove warm color scheme'
+        'monokai:Popular dark coding theme'
+        'solarized:Precision engineered color palette'
+        'catppuccin:Soothing pastel theme'
+        'tokyo:Clean Tokyo Night inspired theme'
+        'oceanic:Deep ocean blue tones'
+        'palenight:Elegant dark purple theme'
+        'onedark:Atom'\''s One Dark theme'
+        'vim:Classic Vim editor colors'
+        'gotham:Dark, Batman-inspired theme'
+        'challenger:High-contrast dark theme'
+        'molokai:Molokai terminal theme'
+        'sonokai:High-contrast color scheme'
+        'serenade:Calm, balanced color palette'
+        'vaporwave:Retro synthwave aesthetic'
+    )
+
+    # Pixel area examples
+    local -a pixel_areas
+    pixel_areas=(
+        '1,1:Single pixel'
+        '2,2:2x2 pixel area'
+        '3,3:3x3 pixel area'
+        '4,4:4x4 pixel area'
+        '5,5:5x5 pixel area'
+        '2,3:2x3 pixel area'
+        '3,2:3x2 pixel area'
+    )
+
+    local context curcontext="$curcontext" state line
+    _arguments "${_arguments_options[@]}" \
+        '(-i --img)'{-i,--img}'[Input image path]:input file:_files -g "*.{jpg,jpeg,png,JPG,JPEG,PNG}"' \
+        '(-o --out)'{-o,--out}'[Output image path]:output file:_files' \
+        '(-p --palette)'{-p,--palette}'[Color palette to use]:palette:->palette' \
+        '(-c --colors)'{-c,--colors}'[Specific colors to use from palette]:colors:->colors' \
+        '(-b --blur)'{-b,--blur}'[Apply Gaussian blur to the final result]' \
+        '(-q --quiet)'{-q,--quiet}'[Quiet mode - suppress output]' \
+        '--no-avg[Disable average pixels optimization algorithm]' \
+        '--pixels-area[Pixel area for average color calculation]:area:->pixels_area' \
+        '--benchmark[Run performance benchmarks and show optimization suggestions]' \
+        '--list-palettes[List all available built-in and user palettes]' \
+        '--create-palette[Create a skeleton palette file]:output file:_files -g "*.toml"' \
+        '--export-palette[Export a built-in palette to TOML format]:palette and output:->export_palette' \
+        '(-h --help)'{-h,--help}'[Show help information]' \
+        '(-V --version)'{-V,--version}'[Show version information]' \
+        && ret=0
+
+    case $state in
+        palette)
+            _describe -t palettes 'built-in palettes' palettes
+            _files -g "*.toml" && ret=0
+            ;;
+        colors)
+            local -a color_examples
+            color_examples=(
+                'red:Primary red color'
+                'green:Primary green color'
+                'blue:Primary blue color'
+                'yellow:Primary yellow color'
+                'orange:Orange color'
+                'purple:Purple color'
+                'white:White color'
+                'black:Black color'
+            )
+            _describe -t colors 'color examples' color_examples && ret=0
+            ;;
+        pixels_area)
+            _describe -t pixel_areas 'pixel area examples' pixel_areas && ret=0
+            ;;
+        export_palette)
+            if (( CURRENT == 3 )); then
+                # First argument: palette name
+                _describe -t palettes 'built-in palettes' palettes && ret=0
+            elif (( CURRENT == 4 )); then
+                # Second argument: output file
+                _files -g "*.toml" && ret=0
+            fi
+            ;;
+    esac
+
+    return ret
+}
+
+(( $+functions[_rtbt_commands] )) ||
+_rtbt_commands() {
+    local commands; commands=()
+    _describe -t commands 'rtbt commands' commands "$@"
+}
+
+if [[ "$funcstack[1]" == "_rtbt" ]]; then
+    _rtbt "$@"
+else
+    compdef _rtbt rtbt
+fi

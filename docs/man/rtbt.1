@@ -1,0 +1,251 @@
+.TH RTBT 1 "2025-08-20" "RustBucket 1.0.0" "User Commands"
+.SH NAME
+rtbt \- blazing-fast CLI tool for converting images to themed color palettes
+.SH SYNOPSIS
+.B rtbt
+[\fIOPTION\fR]...
+\fB\-i\fR \fIINPUT\fR
+[\fB\-o\fR \fIOUTPUT\fR]
+.br
+.B rtbt
+\fB\-\-list\-palettes\fR
+.br
+.B rtbt
+\fB\-\-create\-palette\fR \fIPATH\fR
+.br
+.B rtbt
+\fB\-\-export\-palette\fR \fIPALETTE\fR \fIPATH\fR
+.SH DESCRIPTION
+.B rtbt
+(RustBucket) is a high-performance command-line tool for converting images to themed color palettes. Built with Rust for maximum efficiency, it provides comprehensive palette management and image processing capabilities with zero runtime dependencies.
+
+The tool processes images by mapping each pixel to the nearest color in the selected palette, supporting 17 built-in themes and custom TOML-based palettes. Advanced features include Gaussian blur effects, performance benchmarking, and optimized processing algorithms.
+.SH OPTIONS
+.SS "Required Options"
+.TP
+\fB\-i\fR, \fB\-\-img\fR \fIPATH\fR
+Input image file (required). Supports PNG and JPEG formats.
+.SS "Output Options"
+.TP
+\fB\-o\fR, \fB\-\-out\fR \fIPATH\fR
+Output image file. Defaults to \fInord.png\fR if not specified.
+.SS "Palette Options"
+.TP
+\fB\-p\fR, \fB\-\-palette\fR \fINAME\fR
+Palette name to use for conversion. Defaults to \fInord\fR. Can be a built-in palette name or a custom TOML palette.
+.TP
+\fB\-c\fR, \fB\-\-colors\fR \fILIST\fR
+Comma-separated list of specific colors to use instead of a palette.
+.TP
+\fB\-\-list\-palettes\fR
+List all available built-in and user palettes, then exit.
+.TP
+\fB\-\-create\-palette\fR \fIPATH\fR
+Create a skeleton palette file at the specified path with 8 example colors.
+.TP
+\fB\-\-export\-palette\fR \fIPALETTE\fR \fIPATH\fR
+Export a built-in palette to TOML format at the specified path.
+.SS "Effect Options"
+.TP
+\fB\-b\fR, \fB\-\-blur\fR
+Apply Gaussian blur effect to the output image.
+.SS "Performance Options"
+.TP
+\fB\-\-no\-avg\fR
+Disable pixel averaging for faster processing at the cost of quality.
+.TP
+\fB\-\-pixels\-area\fR \fIW,H\fR
+Custom pixel area size for quality/speed balance. Format: width,height.
+.TP
+\fB\-\-benchmark\fR
+Run performance analysis and display detailed timing information.
+.SS "Output Control"
+.TP
+\fB\-q\fR, \fB\-\-quiet\fR
+Suppress output messages during processing.
+.SS "General Options"
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+Show help information and exit.
+.TP
+\fB\-V\fR, \fB\-\-version\fR
+Show version information and exit.
+.SH BUILT-IN PALETTES
+.B rtbt
+includes 17 built-in color themes compiled directly into the binary:
+.TP
+\fBnord\fR (default)
+Arctic, north-bluish clean palette with 16 colors
+.TP
+\fBdracula\fR
+Dark theme with vibrant accent colors (11 colors)
+.TP
+\fBgruvbox\fR
+Retro groove warm color scheme (17 colors)
+.TP
+\fBsolarized\fR
+Precision engineered color palette (16 colors)
+.TP
+\fBcatppuccin\fR
+Soothing pastel theme (16 colors)
+.TP
+\fBmonokai\fR
+Popular dark coding theme (9 colors)
+.TP
+\fBtokyo\fR
+Clean Tokyo Night inspired theme (29 colors)
+.TP
+\fBoceanic\fR
+Deep ocean blue tones (16 colors)
+.TP
+\fBpalenight\fR
+Elegant dark purple theme (10 colors)
+.TP
+\fBonedark\fR
+Atom's One Dark theme (8 colors)
+.TP
+\fBvim\fR
+Classic Vim editor colors (16 colors)
+.TP
+\fBgotham\fR
+Dark, Batman-inspired theme (16 colors)
+.TP
+\fBchallenger\fR
+High-contrast dark theme (10 colors)
+.TP
+\fBmolokai\fR
+Molokai terminal theme (8 colors)
+.TP
+\fBsonokai\fR
+High-contrast color scheme (12 colors)
+.TP
+\fBserenade\fR
+Calm, balanced color palette (10 colors)
+.TP
+\fBvaporwave\fR
+Retro synthwave aesthetic (10 colors)
+.SH CUSTOM PALETTES
+.B rtbt
+supports custom palettes in TOML format. Palettes are searched in the following order:
+.IP "1." 4
+\fBRTBT_PALETTE_DIR\fR environment variable path (if set)
+.IP "2." 4
+\fB~/.config/rtbt/palettes/\fR (user config directory)
+
+The first palette found with a given name takes precedence.
+
+Custom palette files use TOML format with color definitions:
+.PP
+.nf
+.RS
+name = "example"
+description = "An example custom palette"
+author = "Your Name"
+
+[[colors]]
+name = "dark_blue"
+hex = "#2E3440"
+description = "Deep blue-grey tone"
+
+[[colors]]
+name = "light_blue"
+hex = "#88C0D0"
+description = "Soft cyan-blue"
+.RE
+.fi
+.SH EXAMPLES
+.TP
+Convert image with default Nord palette:
+.nf
+.RS
+rtbt -i photo.jpg -o result.png
+.RE
+.fi
+.TP
+Use Dracula palette with blur effect:
+.nf
+.RS
+rtbt -i image.png -o dark.png -p dracula --blur
+.RE
+.fi
+.TP
+Performance benchmark mode:
+.nf
+.RS
+rtbt -i test.jpg -o output.jpg --benchmark
+.RE
+.fi
+.TP
+Fast processing (disable pixel averaging):
+.nf
+.RS
+rtbt -i large.jpg -o fast.png --no-avg
+.RE
+.fi
+.TP
+List all available palettes:
+.nf
+.RS
+rtbt --list-palettes
+.RE
+.fi
+.TP
+Create a custom palette:
+.nf
+.RS
+rtbt --create-palette my_theme.toml
+.RE
+.fi
+.TP
+Export built-in palette for customization:
+.nf
+.RS
+rtbt --export-palette nord my_nord.toml
+.RE
+.fi
+.SH FILES
+.TP
+.I ~/.config/rtbt/palettes/
+User-specific custom palette directory
+.TP
+.I $RTBT_PALETTE_DIR
+Custom palette directory (if environment variable is set)
+.SH ENVIRONMENT
+.TP
+.B RTBT_PALETTE_DIR
+If set, specifies the primary directory to search for custom palettes.
+.SH EXIT STATUS
+.TP
+.B 0
+Success
+.TP
+.B 1
+General error (invalid arguments, file not found, processing error)
+.TP
+.B 2
+Invalid palette or color specification
+.SH PERFORMANCE
+.B rtbt
+is optimized for performance with the following characteristics:
+.IP \(bu 2
+Statically linked Rust binary with zero runtime dependencies
+.IP \(bu 2
+Optimized color space conversion algorithms
+.IP \(bu 2
+Configurable pixel averaging for quality/speed balance
+.IP \(bu 2
+Built-in performance benchmarking and analysis
+.IP \(bu 2
+Memory-efficient processing with minimal resource usage
+.SH BUGS
+Report bugs at: \fIhttps://github.com/emgeedata/rustbucket/issues\fR
+.SH AUTHORS
+EmGeeData <emgeedata@protonmail.com>
+.SH COPYRIGHT
+Copyright \(co 2025 EmGeeData. Licensed under the MIT License.
+.SH SEE ALSO
+.BR convert (1),
+.BR imagemagick (1),
+.BR gimp (1)
+
+Project homepage: \fIhttps://github.com/emgeedata/rustbucket\fR
