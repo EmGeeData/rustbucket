@@ -21,6 +21,7 @@ Cargo.lock
 .Trashes
 ehthumbs.db
 Thumbs.db
+.directory
 
 # Logs
 *.log
