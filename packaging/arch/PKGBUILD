@@ -16,7 +16,7 @@ build() {
     cd "$pkgname-$pkgver"
     
     # Build the main binary
-    cargo build --release --locked --target-dir=target
+    cargo build --release --target-dir=target
     
     # Generate shell completions
     cargo run --bin generate-completions --release
